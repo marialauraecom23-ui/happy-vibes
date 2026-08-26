@@ -41,8 +41,8 @@ const todaySchedule = [
 ] as const;
 function loadAttempts(): Attempt[] { try { return JSON.parse(localStorage.getItem("aprova-attempts") || "[]"); } catch { return []; } }
 function saveAttempts(v: Attempt[]) { localStorage.setItem("aprova-attempts", JSON.stringify(v)); }
-function timeMinutes(value:string){const [h,m]=value.split(":").map(Number);return h*60+m;}
-function scheduleStatus(range:string, now:number){const [start,end]=range.split("–");const s=timeMinutes(start),e=timeMinutes(end);if(now<s)return "upcoming" as const;if(now<=e)return "now" as const;return "past" as const;}
+function timeMinutes(value:string){const parts=value.split(":").map(Number);return (parts[0]??0)*60+(parts[1]??0);}
+function scheduleStatus(range:string, now:number){const parts=range.split("–");const s=timeMinutes(parts[0]??"0:00"),e=timeMinutes(parts[1]??"0:00");if(now<s)return "upcoming" as const;if(now<=e)return "now" as const;return "past" as const;}
 function currentTimeLabel(){return new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit"}).format(new Date());}
 function AprovaUnimar() {
   const [view, setView] = useState<View>("dashboard"); const [attempts, setAttempts] = useState<Attempt[]>(loadAttempts); const [lessonIndex, setLessonIndex] = useState(0); const [questionIndex, setQuestionIndex] = useState(0); const [selected, setSelected] = useState<number|null>(null); const [checked, setChecked] = useState(false); const [done, setDone] = useState<Record<string,boolean>>(() => { try{return JSON.parse(localStorage.getItem("aprova-lessons")||"{}")}catch{return {}} }); const [essay,setEssay]=useState(()=>localStorage.getItem("aprova-essay")||""); const [tutor,setTutor]=useState(""); const [simStarted,setSimStarted]=useState(false); const [simAnswers,setSimAnswers]=useState<Record<string,number>>({}); const [now,setNow]=useState(()=>new Date());
