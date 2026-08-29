@@ -1,0 +1,61 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+
+export const Route = createFileRoute("/redacao")({ component: RedacaoUnimar });
+
+type EssayStatus = "pendente" | "rascunho" | "enviada" | "corrigida";
+type EssayRecord = { id: string; week: number; date: string; theme: string; text: string; status: EssayStatus; submittedAt?: string; score?: number };
+
+type Prompt = { week: number; date: string; theme: string; support: string[]; command: string };
+
+const prompts: Prompt[] = [
+  { week: 1, date: "02/09/2026", theme: "Os desafios do uso responsável da tecnologia na formação dos estudantes", support: ["A tecnologia ampliou o acesso a informações, ferramentas de aprendizagem e formas de comunicação. Ao mesmo tempo, o excesso de estímulos digitais pode dificultar a concentração e a autonomia do estudante.", "O acesso a recursos digitais, por si só, não garante aprendizagem. É necessário desenvolver critérios para selecionar informações, organizar o tempo e utilizar as ferramentas de maneira consciente."], command: "A partir da leitura dos textos motivadores e de seus conhecimentos, escreva um texto dissertativo-argumentativo sobre o tema proposto. Desenvolva uma posição clara, apresente argumentos e conclua de forma coerente com a discussão." },
+  { week: 2, date: "09/09/2026", theme: "A importância da leitura na formação crítica do cidadão", support: ["Ler diferentes gêneros textuais permite entrar em contato com perspectivas, conhecimentos e experiências diversas.", "Em uma sociedade marcada pela circulação rápida de informações, compreender, comparar e avaliar textos tornou-se uma habilidade essencial para a participação social."], command: "A partir dos textos motivadores, escreva um texto dissertativo-argumentativo sobre o tema. Apresente uma tese, desenvolva argumentos consistentes e estabeleça relações claras entre as ideias." },
+  { week: 3, date: "16/09/2026", theme: "Educação e desigualdade de oportunidades", support: ["A educação pode ampliar oportunidades sociais e profissionais, mas o acesso a recursos educacionais não ocorre de maneira uniforme.", "Diferenças de infraestrutura, renda, acesso à informação e condições de estudo podem influenciar a trajetória escolar dos estudantes."], command: "Escreva um texto dissertativo-argumentativo discutindo o problema apresentado. Utilize os textos motivadores como ponto de partida, sem simplesmente reproduzi-los." },
+  { week: 4, date: "23/09/2026", theme: "Saúde mental e rotina de estudos entre jovens", support: ["Uma rotina de estudos eficiente depende de organização, descanso e estabelecimento de metas possíveis.", "A pressão por desempenho pode contribuir para hábitos pouco sustentáveis quando o estudante não encontra equilíbrio entre cobrança, descanso e aprendizagem."], command: "Produza um texto dissertativo-argumentativo sobre o tema, apresentando uma perspectiva clara e argumentos desenvolvidos de maneira coerente." },
+  { week: 5, date: "30/09/2026", theme: "Desinformação e responsabilidade na circulação de informações", support: ["A velocidade de circulação de conteúdos digitais facilita o acesso à informação, mas também permite que afirmações sem verificação alcancem muitas pessoas.", "Avaliar fonte, contexto e evidências é uma etapa importante antes de compartilhar uma informação."], command: "Escreva um texto dissertativo-argumentativo sobre o tema, articulando os textos motivadores com seus conhecimentos e argumentos." },
+  { week: 6, date: "07/10/2026", theme: "O papel da ciência na sociedade contemporânea", support: ["A ciência produz conhecimentos que podem orientar decisões individuais e coletivas em áreas como saúde, ambiente e tecnologia.", "A compreensão pública da ciência depende também da capacidade de comunicar resultados, limites e evidências de forma acessível."], command: "Produza um texto dissertativo-argumentativo sobre o tema. Organize sua argumentação e conclua retomando a questão discutida." },
+  { week: 7, date: "14/10/2026", theme: "Desafios para uma formação escolar de qualidade", support: ["A preparação escolar envolve conhecimento, autonomia, capacidade de interpretar informações e aplicação do que foi aprendido.", "Uma formação de qualidade não depende apenas da quantidade de conteúdo estudado, mas também da construção de estratégias de aprendizagem e pensamento crítico."], command: "Escreva sua última redação de treino antes do vestibular. Construa uma tese, desenvolva argumentos e apresente uma conclusão coerente com o texto." },
+];
+
+const STORAGE = "aprova-unimar-essays";
+function load(): EssayRecord[] { try { return JSON.parse(localStorage.getItem(STORAGE) || "[]") as EssayRecord[]; } catch { return []; } }
+function countWords(text: string) { return text.trim() ? text.trim().split(/\\s+/).length : 0; }
+
+function RedacaoUnimar() {
+  const [records, setRecords] = useState<EssayRecord[]>(load);
+  const [selectedWeek, setSelectedWeek] = useState(1);
+  const prompt = prompts[selectedWeek - 1]!;
+  const existing = records.find((r) => r.week === selectedWeek);
+  const [text, setText] = useState(existing?.text ?? "");
+  const [notice, setNotice] = useState("");
+  const words = useMemo(() => countWords(text), [text]);
+
+  function selectWeek(week: number) {
+    const saved = records.find((r) => r.week === week);
+    setSelectedWeek(week);
+    setText(saved?.text ?? "");
+    setNotice("");
+  }
+  function persist(status: EssayStatus) {
+    const id = existing?.id ?? `essay-${selectedWeek}`;
+    const item: EssayRecord = { id, week: selectedWeek, date: prompt.date, theme: prompt.theme, text, status, ...(status === "enviada" ? { submittedAt: new Date().toISOString() } : {}) };
+    const next = [...records.filter((r) => r.week !== selectedWeek), item].sort((a, b) => a.week - b.week);
+    setRecords(next);
+    localStorage.setItem(STORAGE, JSON.stringify(next));
+    setNotice(status === "rascunho" ? "Rascunho salvo." : "Redação enviada para correção. A nota só aparecerá quando houver uma correção real.");
+  }
+
+  return <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100"><div className="mx-auto max-w-6xl">
+    <header className="mb-8"><div className="text-sm font-bold text-indigo-300">APROVA UNIMAR · REDAÇÃO</div><h1 className="mt-2 text-3xl font-black">Uma redação por semana até a prova</h1><p className="mt-2 max-w-3xl text-slate-400">Treino orientado ao vestibular: textos motivadores → produção → envio → correção real. O plano começa em 27/08/2026 e termina antes da prova de 18/10/2026.</p></header>
+    <div className="grid gap-6 lg:grid-cols-[230px_1fr]">
+      <aside className="rounded-2xl border border-slate-800 bg-slate-900 p-4"><div className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">Semanas</div>{prompts.map((p) => { const r = records.find((x) => x.week === p.week); return <button key={p.week} onClick={() => selectWeek(p.week)} className={`mb-2 w-full rounded-xl p-3 text-left ${selectedWeek === p.week ? "bg-indigo-500/15 text-indigo-200" : "bg-slate-950 text-slate-400"}`}><div className="text-sm font-semibold">Semana {p.week}</div><div className="mt-1 text-xs">{p.date} · {r?.status ?? "pendente"}</div></button>; })}</aside>
+      <section className="space-y-5">
+        <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/10 p-5"><div className="text-xs font-bold text-indigo-300">PROPOSTA DE VESTIBULAR · SEMANA {prompt.week}</div><h2 className="mt-2 text-2xl font-black">{prompt.theme}</h2><div className="mt-1 text-xs text-slate-400">Entrega sugerida: {prompt.date}</div></div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5"><h3 className="font-bold">Textos motivadores</h3><div className="mt-4 space-y-3">{prompt.support.map((s, i) => <div key={i} className="rounded-xl bg-slate-950 p-4 text-sm leading-6 text-slate-300"><span className="mr-2 text-xs font-bold text-indigo-300">TEXTO {i + 1}</span>{s}</div>)}</div><div className="mt-5 rounded-xl border border-slate-700 bg-slate-950 p-4"><div className="text-xs font-bold uppercase text-slate-500">Comando de produção</div><p className="mt-2 text-sm leading-6 text-slate-300">{prompt.command}</p></div></div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5"><div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-bold">Sua redação</h3><span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-400">{words} palavras</span></div><textarea value={text} onChange={(e) => setText(e.target.value)} disabled={existing?.status === "enviada" || existing?.status === "corrigida"} placeholder="Escreva sua redação aqui..." className="mt-4 min-h-[460px] w-full resize-y rounded-2xl border border-slate-700 bg-slate-950 p-5 text-sm leading-7 outline-none focus:border-indigo-500"/><div className="mt-4 flex flex-wrap gap-3"><button onClick={() => persist("rascunho")} disabled={!text.trim() || existing?.status === "enviada"} className="rounded-xl bg-slate-800 px-4 py-2.5 text-sm font-semibold disabled:opacity-40">Salvar rascunho</button><button onClick={() => persist("enviada")} disabled={words < 1 || existing?.status === "enviada"} className="rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-bold disabled:opacity-40">Enviar para correção</button></div>{notice && <div className="mt-4 rounded-xl bg-slate-800 p-3 text-sm text-slate-300">{notice}</div>}</div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5"><h3 className="font-bold">Critérios de correção</h3><p className="mt-2 text-sm text-slate-400">A correção automática não inventa uma nota. Quando a IA segura estiver configurada no backend, a redação será analisada conforme a rubrica efetivamente disponível para o Vestibular UNIMAR. O sistema deverá separar critérios oficiais do edital de orientações pedagógicas.</p><div className="mt-4 grid gap-2 sm:grid-cols-2">{["Atendimento ao tema e ao comando","Organização e estrutura","Argumentação","Coerência e coesão","Domínio da norma padrão","Conclusão adequada à proposta"].map((x) => <div key={x} className="rounded-xl bg-slate-950 p-3 text-sm text-slate-300">{x}</div>)}</div><div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-200">Importante: nenhuma nota, comentário ou correção é fabricada localmente. Sem provedor de IA configurado, o estado permanece “enviada”.</div></div>
+      </section>
+    </div>
+  </div></main>;
+}
