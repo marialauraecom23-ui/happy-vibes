@@ -23,8 +23,10 @@ const clock=(d=new Date())=>new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minu
 const read=(k:string,d:any)=>{if(typeof window==="undefined")return d;try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
 
 function AprovaUnimar(){
- const [view,setView]=useState<View>("dashboard"),[attempts,setAttempts]=useState<Attempt[]>(()=>read("aprova-attempts",[])),[li,setLi]=useState(0),[qi,setQi]=useState(0),[selected,setSelected]=useState<number|null>(null),[checked,setChecked]=useState(false),[done,setDone]=useState<Record<string,boolean>>(()=>read("aprova-lessons",{})),[essay,setEssay]=useState(()=>localStorage.getItem("aprova-essay")||""),[tutor,setTutor]=useState(""),[sim,setSim]=useState(false),[answers,setAnswers]=useState<Record<string,number>>({}),[now,setNow]=useState(new Date());
- useEffect(()=>{const id=window.setInterval(()=>setNow(new Date()),30000);return()=>clearInterval(id)},[]);
+ const [view,setView]=useState<View>("dashboard"),[attempts,setAttempts]=useState<Attempt[]>(()=>read("aprova-attempts",[])),[li,setLi]=useState(0),[qi,setQi]=useState(0),[selected,setSelected]=useState<number|null>(null),[checked,setChecked]=useState(false),[done,setDone]=useState<Record<string,boolean>>(()=>read("aprova-lessons",{})),[essay,setEssay]=useState(()=>typeof window==="undefined"?"":localStorage.getItem("aprova-essay")||""),[tutor,setTutor]=useState(""),[sim,setSim]=useState(false),[answers,setAnswers]=useState<Record<string,number>>({}),[now,setNow]=useState(()=>new Date());
+ useEffect(()=>{setNow(new Date());const id=window.setInterval(()=>setNow(new Date()),30000);return()=>clearInterval(id)},[]);
+ const session=useMemo(()=>currentSession(now),[now]);
+
  const lesson=lessons[li]!,q=lesson.questions[qi]!,errors=useMemo(()=>attempts.filter(x=>!x.correct),[attempts]),accuracy=attempts.length?Math.round(attempts.filter(x=>x.correct).length/attempts.length*100):0;
  const open=(i:number)=>{setLi(i);setQi(0);setSelected(null);setChecked(false);setView("aula")};
  const finishLesson=()=>{const d={...done,[lesson.topic]:true};setDone(d);localStorage.setItem("aprova-lessons",JSON.stringify(d));setQi(0);setSelected(null);setChecked(false);setView("exercicios")};
