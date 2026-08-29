@@ -19,8 +19,9 @@ const weekTemplate=[["Interpretação de textos + frações + célula","Aula →
 const schedule=[["16:00–16:30",0,"Aula","Interpretação de textos","Habilidade de interpretação prevista no edital."],["16:30–16:50",0,"Prática","Português","Exercícios imediatamente após a aula."],["17:00–17:30",1,"Aula","Frações","Reconstruir a base matemática."],["17:30–17:50",1,"Prática","Matemática","Exercícios imediatamente após a aula."],["18:00–18:30",2,"Aula","Célula","Base para Biologia."],["18:30–18:50",2,"Prática","Biologia","Fixação e registro de erros."],["19:30–19:50",0,"Revisão","Caderno de erros","Revisar dúvidas e erros do estudo."]] as const;
 const mins=(s:string)=>{const [h,m]=s.split(":").map(Number);return (h||0)*60+(m||0)};
 const status=(r:string,n:number)=>{const [a,b]=r.split("–");if(n<mins(a!))return"upcoming";if(n<=mins(b!))return"now";return"past"};
-const clock=()=>new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit"}).format(new Date());
-const read=(k:string,d:any)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+const clock=(d=new Date())=>new Intl.DateTimeFormat("pt-BR",{hour:"2-digit",minute:"2-digit"}).format(d);
+const read=(k:string,d:any)=>{if(typeof window==="undefined")return d;try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+
 function AprovaUnimar(){
  const [view,setView]=useState<View>("dashboard"),[attempts,setAttempts]=useState<Attempt[]>(()=>read("aprova-attempts",[])),[li,setLi]=useState(0),[qi,setQi]=useState(0),[selected,setSelected]=useState<number|null>(null),[checked,setChecked]=useState(false),[done,setDone]=useState<Record<string,boolean>>(()=>read("aprova-lessons",{})),[essay,setEssay]=useState(()=>localStorage.getItem("aprova-essay")||""),[tutor,setTutor]=useState(""),[sim,setSim]=useState(false),[answers,setAnswers]=useState<Record<string,number>>({}),[now,setNow]=useState(new Date());
  useEffect(()=>{const id=window.setInterval(()=>setNow(new Date()),30000);return()=>clearInterval(id)},[]);
