@@ -53,7 +53,7 @@ export async function saveEssay(input:{id?:string;promptId:string;body:string;st
 
 export async function saveEssayCorrection(input:{essayId:string;score:number;summary:string;strengths:string[];weaknesses:string[];errors:unknown[];rewrites:unknown[];improvementPlan:string[]}) {
   const user=await requireUser();
-  const { data,error }=await supabase.from("essay_corrections").upsert({essay_id:input.essayId,user_id:user.id,score:input.score,strengths:input.strengths,weaknesses:input.weaknesses,errors:input.errors,rewrites:input.rewrites,improvement_plan:input.improvementPlan},{onConflict:"essay_id"}).select("id").single();
+  const { data,error }=await supabase.from("essay_corrections").upsert({essay_id:input.essayId,user_id:user.id,score:input.score,strengths:input.strengths as never,weaknesses:input.weaknesses as never,errors:input.errors as never,rewrites:input.rewrites as never,improvement_plan:input.improvementPlan as never},{onConflict:"essay_id"}).select("id").single();
   if(error) throw error;
   return data;
 }
