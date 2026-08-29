@@ -43,7 +43,7 @@ export async function listAiMessages(limit=50) {
   return data??[];
 }
 
-export async function saveEssay(input:{id?:string;promptId:string;body:string;status:string;submittedAt?:string|null}) {
+export async function saveEssay(input:{id?:string|undefined;promptId:string;body:string;status:string;submittedAt?:string|null|undefined}) {
   const user=await requireUser();
   const payload={...(input.id?{id:input.id}:{}),user_id:user.id,prompt_id:input.promptId,body:input.body,status:input.status,submitted_at:input.submittedAt??null,updated_at:new Date().toISOString()};
   const { data,error }=await supabase.from("essays").upsert(payload).select("id").single();
