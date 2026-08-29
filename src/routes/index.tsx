@@ -8,7 +8,7 @@ type View="dashboard"|"roteiro"|"calendario"|"conteudos"|"aula"|"exercicios"|"si
 type Attempt={topic:string;question:string;answer:string;correct:boolean;at:string};
 type Q={id:string;prompt:string;options:string[];correct:number;explanation:string};
 type Lesson={subject:string;topic:string;title:string;duration:string;video:string;videoId:string;why:string;questions:Q[]};
-const EXAM="18/10/2026"; const STUDY_START="27/08/2026";
+const EXAM=shortPlanDate(new Date(`${EXAM_DATE}T12:00:00`))+"/2026"; const STUDY_START=shortPlanDate(new Date(`${PLAN_START}T12:00:00`))+"/2026";
 const OFFICIAL_SUBJECTS=["Língua Portuguesa","Literatura Portuguesa e Brasileira","Gramática","Interpretação de Textos","Biologia","Química","Física","Matemática","Redação"];
 const lessons:Lesson[]=[
  {subject:"Português",topic:"Interpretação de textos",title:"Interpretação de textos: compreensão e estratégia",duration:"18 min",video:"Vídeo complementar: compreensão e interpretação de textos",videoId:"O0TTbXCTg-I",why:"Conteúdo alinhado à área de Língua Portuguesa do edital UNIMAR 2027. O vídeo é apenas complemento; a prática é feita no aplicativo.",questions:[{id:"pt1",prompt:"Na compreensão de texto, qual informação você deve procurar primeiro?",options:["Uma opinião pessoal","Uma informação explícita no texto","Uma regra gramatical","Uma informação que não aparece"],correct:1,explanation:"Comece pelo que o texto efetivamente apresenta; depois faça inferências."},{id:"pt2",prompt:"Se uma palavra é desconhecida, a melhor estratégia inicial é:",options:["Ignorá-la sempre","Procurar o sentido pelo contexto","Escolher o significado mais difícil","Inventar uma definição"],correct:1,explanation:"O contexto fornece pistas para compreender o vocabulário."}]},
