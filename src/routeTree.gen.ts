@@ -11,43 +11,79 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RedacaoRouteImport } from './routes/redacao'
+import { Route as TutorRouteImport } from './routes/tutor'
+import { Route as ApiCorrigirRedacaoRouteImport } from './routes/api/corrigir-redacao'
+import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-
 const RedacaoRoute = RedacaoRouteImport.update({
   id: '/redacao',
   path: '/redacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TutorRoute = TutorRouteImport.update({
+  id: '/tutor',
+  path: '/tutor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCorrigirRedacaoRoute = ApiCorrigirRedacaoRouteImport.update({
+  id: '/api/corrigir-redacao',
+  path: '/api/corrigir-redacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTutorRoute = ApiTutorRouteImport.update({
+  id: '/api/tutor',
+  path: '/api/tutor',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/redacao': typeof RedacaoRoute
+  '/tutor': typeof TutorRoute
+  '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
+  '/api/tutor': typeof ApiTutorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/redacao': typeof RedacaoRoute
+  '/tutor': typeof TutorRoute
+  '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
+  '/api/tutor': typeof ApiTutorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/redacao': typeof RedacaoRoute
+  '/tutor': typeof TutorRoute
+  '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
+  '/api/tutor': typeof ApiTutorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/redacao'
+  fullPaths:
+    '/' | '/redacao' | '/tutor' | '/api/corrigir-redacao' | '/api/tutor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/redacao'
-  id: '__root__' | '/' | '/redacao'
+  to: '/' | '/redacao' | '/tutor' | '/api/corrigir-redacao' | '/api/tutor'
+  id:
+    | '__root__'
+    | '/'
+    | '/redacao'
+    | '/tutor'
+    | '/api/corrigir-redacao'
+    | '/api/tutor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RedacaoRoute: typeof RedacaoRoute
+  TutorRoute: typeof TutorRoute
+  ApiCorrigirRedacaoRoute: typeof ApiCorrigirRedacaoRoute
+  ApiTutorRoute: typeof ApiTutorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,12 +102,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tutor': {
+      id: '/tutor'
+      path: '/tutor'
+      fullPath: '/tutor'
+      preLoaderRoute: typeof TutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/corrigir-redacao': {
+      id: '/api/corrigir-redacao'
+      path: '/api/corrigir-redacao'
+      fullPath: '/api/corrigir-redacao'
+      preLoaderRoute: typeof ApiCorrigirRedacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tutor': {
+      id: '/api/tutor'
+      path: '/api/tutor'
+      fullPath: '/api/tutor'
+      preLoaderRoute: typeof ApiTutorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RedacaoRoute: RedacaoRoute,
+  TutorRoute: TutorRoute,
+  ApiCorrigirRedacaoRoute: ApiCorrigirRedacaoRoute,
+  ApiTutorRoute: ApiTutorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
