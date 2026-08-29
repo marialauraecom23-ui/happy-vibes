@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ExerciciosRouteImport } from './routes/exercicios'
+import { Route as LembreteRouteImport } from './routes/lembrete'
 import { Route as RedacaoRouteImport } from './routes/redacao'
 import { Route as TutorRouteImport } from './routes/tutor'
 import { Route as ApiCorrigirRedacaoRouteImport } from './routes/api/corrigir-redacao'
@@ -18,6 +21,21 @@ import { Route as ApiTutorRouteImport } from './routes/api/tutor'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExerciciosRoute = ExerciciosRouteImport.update({
+  id: '/exercicios',
+  path: '/exercicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LembreteRoute = LembreteRouteImport.update({
+  id: '/lembrete',
+  path: '/lembrete',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedacaoRoute = RedacaoRouteImport.update({
@@ -43,6 +61,9 @@ const ApiTutorRoute = ApiTutorRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/exercicios': typeof ExerciciosRoute
+  '/lembrete': typeof LembreteRoute
   '/redacao': typeof RedacaoRoute
   '/tutor': typeof TutorRoute
   '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
@@ -50,6 +71,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/exercicios': typeof ExerciciosRoute
+  '/lembrete': typeof LembreteRoute
   '/redacao': typeof RedacaoRoute
   '/tutor': typeof TutorRoute
   '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
@@ -58,6 +82,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/exercicios': typeof ExerciciosRoute
+  '/lembrete': typeof LembreteRoute
   '/redacao': typeof RedacaoRoute
   '/tutor': typeof TutorRoute
   '/api/corrigir-redacao': typeof ApiCorrigirRedacaoRoute
@@ -66,12 +93,30 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/redacao' | '/tutor' | '/api/corrigir-redacao' | '/api/tutor'
+    | '/'
+    | '/auth'
+    | '/exercicios'
+    | '/lembrete'
+    | '/redacao'
+    | '/tutor'
+    | '/api/corrigir-redacao'
+    | '/api/tutor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/redacao' | '/tutor' | '/api/corrigir-redacao' | '/api/tutor'
+  to:
+    | '/'
+    | '/auth'
+    | '/exercicios'
+    | '/lembrete'
+    | '/redacao'
+    | '/tutor'
+    | '/api/corrigir-redacao'
+    | '/api/tutor'
   id:
     | '__root__'
     | '/'
+    | '/auth'
+    | '/exercicios'
+    | '/lembrete'
     | '/redacao'
     | '/tutor'
     | '/api/corrigir-redacao'
@@ -80,6 +125,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  ExerciciosRoute: typeof ExerciciosRoute
+  LembreteRoute: typeof LembreteRoute
   RedacaoRoute: typeof RedacaoRoute
   TutorRoute: typeof TutorRoute
   ApiCorrigirRedacaoRoute: typeof ApiCorrigirRedacaoRoute
@@ -93,6 +141,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercicios': {
+      id: '/exercicios'
+      path: '/exercicios'
+      fullPath: '/exercicios'
+      preLoaderRoute: typeof ExerciciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lembrete': {
+      id: '/lembrete'
+      path: '/lembrete'
+      fullPath: '/lembrete'
+      preLoaderRoute: typeof LembreteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redacao': {
@@ -128,6 +197,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  ExerciciosRoute: ExerciciosRoute,
+  LembreteRoute: LembreteRoute,
   RedacaoRoute: RedacaoRoute,
   TutorRoute: TutorRoute,
   ApiCorrigirRedacaoRoute: ApiCorrigirRedacaoRoute,

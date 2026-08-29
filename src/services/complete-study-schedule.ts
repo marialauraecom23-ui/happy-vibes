@@ -1,7 +1,7 @@
 import { CURRICULUM, PLAN_START, EXAM_DATE } from "@/services/study-plan";
 export type ReminderItem={id:string;subject:string;topic:string;day:number;date:Date;kind:"study"|"essay"};
 const subjects=Object.keys(CURRICULUM).filter(s=>s!=="Redação");
-const topics=subjects.flatMap(subject=>CURRICULUM[subject].map(topic=>({subject,topic})));
+const topics=subjects.flatMap(subject=>(CURRICULUM[subject]??[]).map(topic=>({subject,topic})));
 export const TOTAL_STUDY_DAYS=Math.round((EXAM_DATE.getTime()-PLAN_START.getTime())/86400000)+1;
 export function remindersForDay(day:number):ReminderItem[]{
  if(day<1||day>TOTAL_STUDY_DAYS)return[];

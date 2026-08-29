@@ -43,7 +43,7 @@ export async function listAiMessages(limit=50) {
   return data??[];
 }
 
-export async function saveEssay(input:{id?:string;promptId:string;body:string;status:string;submittedAt?:string|null}) {
+export async function saveEssay(input:{id?:string|undefined;promptId:string;body:string;status:string;submittedAt?:string|null|undefined}) {
   const user=await requireUser();
   const payload={...(input.id?{id:input.id}:{}),user_id:user.id,prompt_id:input.promptId,body:input.body,status:input.status,submitted_at:input.submittedAt??null,updated_at:new Date().toISOString()};
   const { data,error }=await supabase.from("essays").upsert(payload).select("id").single();
@@ -53,7 +53,7 @@ export async function saveEssay(input:{id?:string;promptId:string;body:string;st
 
 export async function saveEssayCorrection(input:{essayId:string;score:number;summary:string;strengths:string[];weaknesses:string[];errors:unknown[];rewrites:unknown[];improvementPlan:string[]}) {
   const user=await requireUser();
-  const { data,error }=await supabase.from("essay_corrections").upsert({essay_id:input.essayId,user_id:user.id,score:input.score,strengths:input.strengths,weaknesses:input.weaknesses,errors:input.errors,rewrites:input.rewrites,improvement_plan:input.improvementPlan},{onConflict:"essay_id"}).select("id").single();
+  const { data,error }=await supabase.from("essay_corrections").upsert({essay_id:input.essayId,user_id:user.id,score:input.score,strengths:input.strengths as never,weaknesses:input.weaknesses as never,errors:input.errors as never,rewrites:input.rewrites as never,improvement_plan:input.improvementPlan as never},{onConflict:"essay_id"}).select("id").single();
   if(error) throw error;
   return data;
 }
