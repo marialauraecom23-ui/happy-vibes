@@ -14,7 +14,649 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      error_notebook: {
+        Row: {
+          error_count: number
+          id: string
+          last_error_at: string
+          question_id: string
+          resolved: boolean
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          error_count?: number
+          id?: string
+          last_error_at?: string
+          question_id: string
+          resolved?: boolean
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          error_count?: number
+          id?: string
+          last_error_at?: string
+          question_id?: string
+          resolved?: boolean
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_notebook_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "error_notebook_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      essay_corrections: {
+        Row: {
+          created_at: string
+          errors: Json
+          essay_id: string
+          id: string
+          improvement_plan: string | null
+          rewrites: Json
+          score: number | null
+          strengths: Json
+          user_id: string
+          weaknesses: Json
+        }
+        Insert: {
+          created_at?: string
+          errors?: Json
+          essay_id: string
+          id?: string
+          improvement_plan?: string | null
+          rewrites?: Json
+          score?: number | null
+          strengths?: Json
+          user_id: string
+          weaknesses?: Json
+        }
+        Update: {
+          created_at?: string
+          errors?: Json
+          essay_id?: string
+          id?: string
+          improvement_plan?: string | null
+          rewrites?: Json
+          score?: number | null
+          strengths?: Json
+          user_id?: string
+          weaknesses?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "essay_corrections_essay_id_fkey"
+            columns: ["essay_id"]
+            isOneToOne: false
+            referencedRelation: "essays"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      essay_prompts: {
+        Row: {
+          command: string
+          id: string
+          motivating_texts: Json
+          theme: string
+          week_number: number
+        }
+        Insert: {
+          command: string
+          id: string
+          motivating_texts?: Json
+          theme: string
+          week_number: number
+        }
+        Update: {
+          command?: string
+          id?: string
+          motivating_texts?: Json
+          theme?: string
+          week_number?: number
+        }
+        Relationships: []
+      }
+      essays: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          prompt_id: string
+          status: string
+          submitted_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          prompt_id: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "essays_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "essay_prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          exam_date: string
+          goal: string
+          id: string
+          level: string
+          onboarded: boolean
+          plan_start: string
+          target_course: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          exam_date?: string
+          goal?: string
+          id: string
+          level?: string
+          onboarded?: boolean
+          plan_start?: string
+          target_course?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          exam_date?: string
+          goal?: string
+          id?: string
+          level?: string
+          onboarded?: boolean
+          plan_start?: string
+          target_course?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      question_attempts: {
+        Row: {
+          created_at: string
+          elapsed_seconds: number
+          id: string
+          is_correct: boolean
+          question_id: string
+          selected_answer: string
+          source: string
+          subject_id: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          elapsed_seconds?: number
+          id?: string
+          is_correct: boolean
+          question_id: string
+          selected_answer: string
+          source?: string
+          subject_id: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          elapsed_seconds?: number
+          id?: string
+          is_correct?: boolean
+          question_id?: string
+          selected_answer?: string
+          source?: string
+          subject_id?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_attempts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_attempts_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_attempts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          correct_answer: string
+          difficulty: number
+          explanation: string
+          id: string
+          options: Json
+          statement: string
+          subject_id: string
+          topic_id: string
+        }
+        Insert: {
+          correct_answer: string
+          difficulty?: number
+          explanation: string
+          id: string
+          options: Json
+          statement: string
+          subject_id: string
+          topic_id: string
+        }
+        Update: {
+          correct_answer?: string
+          difficulty?: number
+          explanation?: string
+          id?: string
+          options?: Json
+          statement?: string
+          subject_id?: string
+          topic_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "questions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          interval_days: number
+          review_type: string
+          scheduled_for: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          interval_days: number
+          review_type?: string
+          scheduled_for: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          interval_days?: number
+          review_type?: string
+          scheduled_for?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      simulation_answers: {
+        Row: {
+          attempt_id: string
+          is_correct: boolean | null
+          marked_for_review: boolean
+          position: number
+          question_id: string
+          selected_answer: string | null
+          user_id: string
+        }
+        Insert: {
+          attempt_id: string
+          is_correct?: boolean | null
+          marked_for_review?: boolean
+          position?: number
+          question_id: string
+          selected_answer?: string | null
+          user_id: string
+        }
+        Update: {
+          attempt_id?: string
+          is_correct?: boolean | null
+          marked_for_review?: boolean
+          position?: number
+          question_id?: string
+          selected_answer?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "simulation_answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "simulation_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "simulation_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      simulation_attempts: {
+        Row: {
+          correct_count: number
+          duration_minutes: number
+          finished_at: string | null
+          id: string
+          mode: string
+          question_ids: Json
+          score: number | null
+          started_at: string
+          subject_id: string | null
+          title: string
+          topic_id: string | null
+          total_count: number
+          user_id: string
+        }
+        Insert: {
+          correct_count?: number
+          duration_minutes?: number
+          finished_at?: string | null
+          id?: string
+          mode?: string
+          question_ids?: Json
+          score?: number | null
+          started_at?: string
+          subject_id?: string | null
+          title: string
+          topic_id?: string | null
+          total_count?: number
+          user_id: string
+        }
+        Update: {
+          correct_count?: number
+          duration_minutes?: number
+          finished_at?: string | null
+          id?: string
+          mode?: string
+          question_ids?: Json
+          score?: number | null
+          started_at?: string
+          subject_id?: string | null
+          title?: string
+          topic_id?: string | null
+          total_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "simulation_attempts_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "simulation_attempts_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number
+          id: string
+          kind: string
+          topic_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          kind?: string
+          topic_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          kind?: string
+          topic_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subjects: {
+        Row: {
+          id: string
+          name: string
+          position: number
+        }
+        Insert: {
+          id: string
+          name: string
+          position?: number
+        }
+        Update: {
+          id?: string
+          name?: string
+          position?: number
+        }
+        Relationships: []
+      }
+      task_completions: {
+        Row: {
+          completed_at: string
+          day_number: number
+          id: string
+          kind: string
+          task_key: string
+          topic_id: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          day_number: number
+          id?: string
+          kind: string
+          task_key: string
+          topic_id?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          day_number?: number
+          id?: string
+          kind?: string
+          task_key?: string
+          topic_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_completions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics: {
+        Row: {
+          duration_min: number
+          example_md: string
+          id: string
+          learn_md: string
+          name: string
+          objective: string
+          position: number
+          resource_label: string | null
+          resource_url: string | null
+          review_md: string
+          subject_id: string
+        }
+        Insert: {
+          duration_min?: number
+          example_md?: string
+          id: string
+          learn_md?: string
+          name: string
+          objective?: string
+          position?: number
+          resource_label?: string | null
+          resource_url?: string | null
+          review_md?: string
+          subject_id: string
+        }
+        Update: {
+          duration_min?: number
+          example_md?: string
+          id?: string
+          learn_md?: string
+          name?: string
+          objective?: string
+          position?: number
+          resource_label?: string | null
+          resource_url?: string | null
+          review_md?: string
+          subject_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          last_study_date: string | null
+          streak_days: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          last_study_date?: string | null
+          streak_days?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          last_study_date?: string | null
+          streak_days?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
