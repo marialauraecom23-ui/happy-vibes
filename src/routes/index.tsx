@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { EXAM_DATE, PLAN_START, STUDY_START_HOUR, currentSession, daysUntilExam, formatPlanDate, planWeekDates, shortPlanDate } from "@/lib/current-study";
+
 
 export const Route = createFileRoute("/")({ component: AprovaUnimar });
 type View="dashboard"|"roteiro"|"calendario"|"conteudos"|"aula"|"exercicios"|"simulados"|"redacao"|"tutor"|"erros"|"progresso";
